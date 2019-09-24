@@ -353,10 +353,6 @@ open class SideMenuController: UIViewController, UIGestureRecognizerDelegate {
             return
         }
         
-        if let color = centerNavController?.navigationBar.barTintColor, statusBarUnderlay.backgroundColor != color {
-            statusBarUnderlay.backgroundColor = color
-        }
-        
         statusBarUnderlay.alpha = alpha
     }
     

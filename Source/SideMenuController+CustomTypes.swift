@@ -51,7 +51,7 @@ public extension SideMenuController {
         }
         
         public struct Animating {
-            public var statusBarBehaviour = StatusBarBehaviour.slideAnimation
+            public var statusBarBehaviour = StatusBarBehaviour.showUnderlay
             public var reavealDuration = 0.3
             public var hideDuration = 0.2
             public var transitionAnimator: TransitionAnimatable.Type? = FadeAnimator.self
