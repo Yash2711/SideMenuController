@@ -352,7 +352,8 @@ open class SideMenuController: UIViewController, UIGestureRecognizerDelegate {
         guard showsStatusUnderlay else {
             return
         }
-        
+
+        statusBarUnderlay.backgroundColor = .clear
         statusBarUnderlay.alpha = alpha
     }
     
