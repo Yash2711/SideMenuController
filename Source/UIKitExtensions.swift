@@ -23,8 +23,6 @@
 
 import Foundation
 
-let DefaultStatusBarHeight : CGFloat = UIApplication.shared.statusBarFrame.size.height
-
 extension UIView {
     class func panelAnimation(_ duration : TimeInterval, animations : @escaping (()->()), completion : (()->())? = nil) {
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseOut, animations: animations) { _ in
@@ -85,7 +83,20 @@ public extension UINavigationController {
 extension UIWindow {
     func set(_ hidden: Bool, withBehaviour behaviour: SideMenuController.StatusBarBehaviour) {
         let animations: () -> ()
-        
+
+        let statusBarHeight : CGFloat
+
+        #if swift(>=5.1)
+        if #available(iOS 13, *) {
+            statusBarHeight = self.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+        } else {
+            statusBarHeight = UIApplication.shared.statusBarFrame.height
+        }
+        #else
+        statusBarHeight = UIApplication.shared.statusBarFrame.height
+        #endif
+
+
         switch behaviour {
         case .fadeAnimation, .horizontalPan:
             animations = {
@@ -93,7 +104,7 @@ extension UIWindow {
             }
         case .slideAnimation:
             animations = {
-                self.transform = hidden ? CGAffineTransform(translationX: 0, y: -1 * DefaultStatusBarHeight) : CGAffineTransform.identity
+                self.transform = hidden ? CGAffineTransform(translationX: 0, y: -1 * statusBarHeight) : CGAffineTransform.identity
             }
         default:
             return

@@ -172,7 +172,10 @@ open class SideMenuController: UIViewController, UIGestureRecognizerDelegate {
     var screenSize: CGSize {
         return self.view.frame.size
     }
-    
+
+
+    var previousStatusBarHeight: CGFloat = 0
+
     // MARK:- View lifecycle -
     
     required public init?(coder aDecoder: NSCoder) {
@@ -187,6 +190,7 @@ open class SideMenuController: UIViewController, UIGestureRecognizerDelegate {
     
     func setUpViewHierarchy() {
         view = UIView(frame: UIScreen.main.bounds)
+        previousStatusBarHeight = calculateStatusBarHeight()
         configureViews()
     }
     
@@ -278,7 +282,7 @@ open class SideMenuController: UIViewController, UIGestureRecognizerDelegate {
         }
         
         // also return if the status bar is higher and wants to hide
-        if statusBarHeight > DefaultStatusBarHeight && hidden == true {
+        if statusBarHeight > self.calculateStatusBarHeight() && hidden == true {
             return
         }
         
@@ -417,10 +421,28 @@ open class SideMenuController: UIViewController, UIGestureRecognizerDelegate {
     var canDisplaySideController: Bool {
         return sideViewController != nil
     }
-    
-    fileprivate var previousStatusBarHeight: CGFloat = DefaultStatusBarHeight
-    fileprivate var statusBarHeight: CGFloat {
-        return UIApplication.shared.statusBarFrame.size.height > 0 ? UIApplication.shared.statusBarFrame.size.height : DefaultStatusBarHeight
+
+    fileprivate func calculateStatusBarHeight() -> CGFloat {
+        let statusBarHeight : CGFloat
+
+        #if swift(>=5.1)
+        if #available(iOS 13, *) {
+            if let window = sbw {
+                statusBarHeight = window.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+            } else {
+                statusBarHeight = 0
+            }
+        } else {
+            statusBarHeight = UIApplication.shared.statusBarFrame.height
+        }
+        #else
+        statusBarHeight = UIApplication.shared.statusBarFrame.height
+        #endif
+        return statusBarHeight
+    }
+
+    var statusBarHeight: CGFloat {
+        return calculateStatusBarHeight()
     }
     
     fileprivate var hidesStatusBar: Bool {
